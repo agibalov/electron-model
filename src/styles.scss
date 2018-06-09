@@ -1,2 +1,7 @@
 @import "~bulma";
 @import "~bulma-slider";
+
+html, body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
