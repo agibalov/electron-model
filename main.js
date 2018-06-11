@@ -58,18 +58,18 @@ var AppComponent = /** @class */ (function () {
     Object.defineProperty(AppComponent.prototype, "currentSampleIndex", {
         // TODO: how do I get rid of duplicate Math.min() in get/set currentSampleIndex?
         get: function () {
-            this._currentSampleIndex = Math.min(this._currentSampleIndex, this.lorentzService.trajectory.length - 1);
+            this._currentSampleIndex = Math.min(this._currentSampleIndex, this.lorentzService.samples.length - 1);
             return this._currentSampleIndex;
         },
         set: function (value) {
-            this._currentSampleIndex = Math.min(value, this.lorentzService.trajectory.length - 1);
+            this._currentSampleIndex = Math.min(value, this.lorentzService.samples.length - 1);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AppComponent.prototype, "currentSample", {
         get: function () {
-            return this.lorentzService.trajectory[this.currentSampleIndex];
+            return this.lorentzService.samples[this.currentSampleIndex];
         },
         enumerable: true,
         configurable: true
@@ -78,8 +78,8 @@ var AppComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-root',
             // tslint:disable:no-trailing-whitespace max-line-length
-            template: "\n    <div class=\"root-container\">\n      <div class=\"top-container\">\n        <canvas class=\"scene-view\" \n                manipulator\n                (manipulationBegin)=\"cameraDriver.handleManipulationBegin(three.camera)\"\n                (manipulationRotationUpdate)=\"cameraDriver.handleRotationUpdate($event)\"\n                (manipulationTranslationUpdate)=\"cameraDriver.handleTranslationUpdate($event)\"\n                (manipulationZoomUpdate)=\"cameraDriver.handleZoomUpdate($event)\"\n                (manipulationEnd)=\"cameraDriver.handleManipulationEnd()\"\n                three #three=\"three\">\n          <camera [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\" fov=\"60\"></camera>\n          <scene>\n            <light [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\"></light>\n            <electron *ngIf=\"showElectron\" [position]=\"currentSample.position.clone().multiplyScalar(1e-5)\"></electron>\n            <trajectory *ngIf=\"showTrajectory\" [samples]=\"lorentzService.trajectory\"></trajectory>\n            <grid *ngIf=\"showGrid\"></grid>\n            <axes *ngIf=\"showAxes\"></axes>\n          </scene>\n        </canvas>\n        <div class=\"right-panel\">\n          <vector-editor name=\"Start Velocity\" [range]=\"1e6\" [(ngModel)]=\"lorentzService.startVelocity\"></vector-editor>\n          <vector-editor name=\"Electric Field\" [range]=\"1e-5\" [(ngModel)]=\"lorentzService.electricField\"></vector-editor>\n          <vector-editor name=\"Magnetic Field\" [range]=\"1e-10\" [(ngModel)]=\"lorentzService.magneticField\"></vector-editor>\n\n          <pre class=\"checkboxes\">\n\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showElectron\"> Show electron</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showTrajectory\"> Show trajectory</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showGrid\"> Show grid</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showAxes\"> Show axes</label>\n          \n<span class=\"has-text-weight-bold\">Number of Samples</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                    [min]=\"10\" [max]=\"5000\" [step]=\"1\"\n                                                                    [(ngModel)]=\"lorentzService.numberOfSamples\"> ({{lorentzService.numberOfSamples}})\n<span class=\"has-text-weight-bold\">Time of Flight</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                 [min]=\"0.1\" [max]=\"10\" [step]=\"1e-3\"\n                                                                 [(ngModel)]=\"lorentzService.timeOfFlight\"> ({{lorentzService.timeOfFlight | exponential}})\n          </pre>\n        </div>\n      </div>\n      <div class=\"bottom-container\">\n        <div class=\"container is-fluid\">\n          <input type=\"range\" class=\"slider is-small is-fullwidth\"\n                 [min]=\"0\"\n                 [max]=\"lorentzService.trajectory.length - 1\"\n                 [step]=\"1\"\n                 [(ngModel)]=\"currentSampleIndex\">\n          <p>{{currentSampleIndex + 1}} / {{lorentzService.trajectory.length}}</p>\n\n          <pre class=\"debug\">\ntimestamp: {{currentSample.timestamp | exponential}}\nposition: ({{currentSample.position.x | exponential}}, {{currentSample.position.y | exponential}}, {{currentSample.position.z | exponential}})\nvelocity: ({{currentSample.velocity.x | exponential}}, {{currentSample.velocity.y | exponential}}, {{currentSample.velocity.z | exponential}})\nacceleration: ({{currentSample.acceleration.x | exponential}}, {{currentSample.acceleration.y | exponential}}, {{currentSample.acceleration.z | exponential}})</pre>\n        </div>\n      </div>\n    </div>\n  ",
-            styles: ["\n    .root-container {\n      width: 100vw;\n      height: 100vh;\n      display: flex;\n      flex-direction: column;\n    }\n    \n    .top-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: row;\n    }\n    \n    .scene-view {\n      flex-grow: 1;\n      width: 1%;\n    }\n    \n    .right-panel {\n      width: 400px;\n      padding-left: 5px;\n      overflow-y: auto;\n    }\n\n    .bottom-container {\n      padding-bottom: 5px;\n    }\n    \n    .checkboxes {\n      padding: 0;\n      margin: 0;\n    }\n    \n    .debug {\n      padding: 0;\n      margin: 0;\n      font-size: 10px;\n    }\n  "]
+            template: "\n    <div class=\"root-container\">\n      <div class=\"top-container\">\n        <canvas class=\"scene-view\"\n                manipulator\n                (manipulationBegin)=\"cameraDriver.handleManipulationBegin(three.camera)\"\n                (manipulationRotationUpdate)=\"cameraDriver.handleRotationUpdate($event)\"\n                (manipulationTranslationUpdate)=\"cameraDriver.handleTranslationUpdate($event)\"\n                (manipulationZoomUpdate)=\"cameraDriver.handleZoomUpdate($event)\"\n                (manipulationEnd)=\"cameraDriver.handleManipulationEnd()\"\n                three #three=\"three\">\n          <camera [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\" fov=\"60\"></camera>\n          <scene>\n            <light [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\"></light>\n            <electron *ngIf=\"showElectron\" [position]=\"currentSample.position.clone().multiplyScalar(1e-5)\"></electron>\n            <trajectory *ngIf=\"showTrajectory\" [samples]=\"lorentzService.samples\"></trajectory>\n            <grid *ngIf=\"showGrid\"></grid>\n            <axes *ngIf=\"showAxes\"></axes>\n          </scene>\n        </canvas>\n        <div class=\"right-panel\">\n          <vector-editor name=\"Start Velocity (m/s)\" [range]=\"1e6\" [(ngModel)]=\"lorentzService.startVelocity\"></vector-editor>\n          <vector-editor name=\"Electric Field (V/m)\" [range]=\"1e-5\" [(ngModel)]=\"lorentzService.electricField\"></vector-editor>\n          <vector-editor name=\"Magnetic Field (T)\" [range]=\"1e-10\" [(ngModel)]=\"lorentzService.magneticField\"></vector-editor>\n\n          <pre class=\"checkboxes\">\n\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showElectron\"> Show electron</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showTrajectory\"> Show trajectory</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showGrid\"> Show grid</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showAxes\"> Show axes</label>\n          \n<span class=\"has-text-weight-bold\">Number of Samples</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                    [min]=\"10\" [max]=\"5000\" [step]=\"1\"\n                                                                    [(ngModel)]=\"lorentzService.numberOfSamples\"> ({{lorentzService.numberOfSamples}})\n<span class=\"has-text-weight-bold\">Time of Flight (s)</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                 [min]=\"0.1\" [max]=\"10\" [step]=\"1e-3\"\n                                                                 [(ngModel)]=\"lorentzService.timeOfFlight\"> ({{lorentzService.timeOfFlight | exponential}})\n          </pre>\n          <app-player [numberOfSamples]=\"lorentzService.numberOfSamples\"\n                      [(currentSampleIndex)]=\"currentSampleIndex\"></app-player>\n        </div>\n      </div>\n      <div class=\"bottom-container\">\n        <div class=\"container is-fluid\">\n          <pre>\ntimestamp: {{currentSample.timestamp | exponential}}\nposition: {{currentSample.position | vector}}\nvelocity: {{currentSample.velocity | vector}}\nacceleration: {{currentSample.acceleration | vector}}</pre>\n        </div>\n      </div>\n    </div>\n  ",
+            styles: ["\n    .root-container {\n      width: 100vw;\n      height: 100vh;\n      display: flex;\n      flex-direction: column;\n    }\n    \n    .top-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: row;\n    }\n    \n    .scene-view {\n      flex-grow: 1;\n      width: 1%;\n    }\n    \n    .right-panel {\n      width: 400px;\n      padding-left: 5px;\n      overflow-y: auto;\n    }\n\n    .bottom-container {\n      padding-bottom: 5px;\n    }\n    \n    .checkboxes {\n      padding: 0;\n      margin: 0;\n    }\n  "]
             // tslint:enable:no-trailing-whitespace max-line-length
         })
     ], AppComponent);
@@ -115,12 +115,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _trajectory_directive__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./trajectory.directive */ "./src/app/trajectory.directive.ts");
 /* harmony import */ var _exponential_pipe__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./exponential.pipe */ "./src/app/exponential.pipe.ts");
 /* harmony import */ var _axes_directive__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./axes.directive */ "./src/app/axes.directive.ts");
+/* harmony import */ var _player_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./player.component */ "./src/app/player.component.ts");
+/* harmony import */ var _vector_pipe__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./vector.pipe */ "./src/app/vector.pipe.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -153,7 +157,9 @@ var AppModule = /** @class */ (function () {
                 _vector_editor_component__WEBPACK_IMPORTED_MODULE_11__["VectorEditorComponent"],
                 _trajectory_directive__WEBPACK_IMPORTED_MODULE_12__["TrajectoryDirective"],
                 _exponential_pipe__WEBPACK_IMPORTED_MODULE_13__["ExponentialPipe"],
-                _axes_directive__WEBPACK_IMPORTED_MODULE_14__["AxesDirective"]
+                _vector_pipe__WEBPACK_IMPORTED_MODULE_16__["VectorPipe"],
+                _axes_directive__WEBPACK_IMPORTED_MODULE_14__["AxesDirective"],
+                _player_component__WEBPACK_IMPORTED_MODULE_15__["PlayerComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -522,14 +528,17 @@ var GridDirective = /** @class */ (function () {
             color: 0x7766ff
         });
         this.line = new three__WEBPACK_IMPORTED_MODULE_0__["Line"](geometry, material);
+        this.line.scale.set(GridDirective_1.SCALE, GridDirective_1.SCALE, GridDirective_1.SCALE);
     }
+    GridDirective_1 = GridDirective;
     GridDirective.prototype.ngOnInit = function () {
         this.scene.add(this.line);
     };
     GridDirective.prototype.ngOnDestroy = function () {
         this.scene.remove(this.line);
     };
-    GridDirective = __decorate([
+    GridDirective.SCALE = 1e-1;
+    GridDirective = GridDirective_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
             // tslint:disable-next-line:directive-selector
             selector: 'grid'
@@ -537,6 +546,7 @@ var GridDirective = /** @class */ (function () {
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Scene"]])
     ], GridDirective);
     return GridDirective;
+    var GridDirective_1;
 }());
 
 
@@ -721,7 +731,7 @@ var LorentzService = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LorentzService.prototype, "trajectory", {
+    Object.defineProperty(LorentzService.prototype, "samples", {
         get: function () {
             if (this._shouldRecalculate) {
                 this._shouldRecalculate = false;
@@ -907,6 +917,130 @@ var ManipulationType;
     ManipulationType[ManipulationType["Rotation"] = 0] = "Rotation";
     ManipulationType[ManipulationType["Translation"] = 1] = "Translation";
 })(ManipulationType || (ManipulationType = {}));
+
+
+/***/ }),
+
+/***/ "./src/app/player.component.ts":
+/*!*************************************!*\
+  !*** ./src/app/player.component.ts ***!
+  \*************************************/
+/*! exports provided: PlayerComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlayerComponent", function() { return PlayerComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var PlayerComponent = /** @class */ (function () {
+    function PlayerComponent() {
+        this.currentSampleIndexChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+    }
+    PlayerComponent_1 = PlayerComponent;
+    Object.defineProperty(PlayerComponent.prototype, "numberOfSamples", {
+        get: function () {
+            return this._numberOfSamples;
+        },
+        set: function (value) {
+            if (this._numberOfSamples !== value) {
+                this._numberOfSamples = value;
+                if (this.subscription != null) {
+                    this.subscription.unsubscribe();
+                    this.subscription = null;
+                    this.play();
+                }
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PlayerComponent.prototype, "currentSampleIndex", {
+        get: function () {
+            return this._currentSampleIndex;
+        },
+        set: function (value) {
+            if (this._currentSampleIndex !== value) {
+                this._currentSampleIndex = value;
+                this.currentSampleIndexChange.emit(value);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    PlayerComponent.prototype.play = function () {
+        var _this = this;
+        if (this.currentSampleIndex === this.numberOfSamples - 1) {
+            this.currentSampleIndex = 0;
+        }
+        var timePerSample = PlayerComponent_1.DESIRED_PLAYBACK_TIME / this.numberOfSamples;
+        this.subscription = Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["timer"])(0, timePerSample)
+            .subscribe(function (t) {
+            if (_this.currentSampleIndex === _this.numberOfSamples - 1) {
+                _this.subscription.unsubscribe();
+                _this.subscription = null;
+                return;
+            }
+            ++_this.currentSampleIndex;
+        });
+    };
+    PlayerComponent.prototype.pause = function () {
+        this.subscription.unsubscribe();
+        this.subscription = null;
+    };
+    PlayerComponent.prototype.jumpToFirstSample = function () {
+        this.currentSampleIndex = 0;
+    };
+    PlayerComponent.prototype.jumpToLastSample = function () {
+        this.currentSampleIndex = this.numberOfSamples - 1;
+    };
+    PlayerComponent.prototype.jumpOneSampleBack = function () {
+        if (this.currentSampleIndex > 0) {
+            --this.currentSampleIndex;
+        }
+    };
+    PlayerComponent.prototype.jumpOneSampleForward = function () {
+        if (this.currentSampleIndex < this.numberOfSamples - 1) {
+            ++this.currentSampleIndex;
+        }
+    };
+    PlayerComponent.DESIRED_PLAYBACK_TIME = 3000;
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", Object)
+    ], PlayerComponent.prototype, "currentSampleIndexChange", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Number),
+        __metadata("design:paramtypes", [Number])
+    ], PlayerComponent.prototype, "numberOfSamples", null);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Number),
+        __metadata("design:paramtypes", [Number])
+    ], PlayerComponent.prototype, "currentSampleIndex", null);
+    PlayerComponent = PlayerComponent_1 = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-player',
+            template: "\n    <input type=\"range\" class=\"slider is-large is-fullwidth\"\n           [min]=\"0\"\n           [max]=\"numberOfSamples - 1\"\n           [step]=\"1\"\n           [(ngModel)]=\"currentSampleIndex\">\n\n    <div class=\"buttons\">\n      <button type=\"button\" class=\"button is-small\" (click)=\"jumpToFirstSample()\">\n        <span class=\"icon is-small\">\n          <i class=\"fas fa-fast-backward\"></i>\n        </span>\n      </button>\n      <button type=\"button\" class=\"button is-small\" (click)=\"jumpOneSampleBack()\">\n        <span class=\"icon is-small\">\n          <i class=\"fas fa-step-backward\"></i>\n        </span>\n      </button>\n      <button type=\"button\" class=\"button is-small\" (click)=\"play()\" *ngIf=\"subscription == null\">\n        <span class=\"icon is-small\">\n          <i class=\"fas fa-play\"></i>\n        </span>\n      </button>\n      <button type=\"button\" class=\"button is-small\" (click)=\"pause()\" *ngIf=\"subscription != null\">\n        <span class=\"icon is-small\">\n          <i class=\"fas fa-pause\"></i>\n        </span>\n      </button>\n      <button type=\"button\" class=\"button is-small\" (click)=\"jumpOneSampleForward()\">\n        <span class=\"icon is-small\">\n          <i class=\"fas fa-step-forward\"></i>\n        </span>\n      </button>\n      <button type=\"button\" class=\"button is-small\" (click)=\"jumpToLastSample()\">\n        <span class=\"icon is-small\">\n          <i class=\"fas fa-fast-forward\"></i>\n        </span>\n      </button>\n      <span>Sample {{currentSampleIndex + 1}} of {{numberOfSamples}}</span>\n    </div>\n  ",
+            styles: ["\n    input {\n      padding-right: 10px;\n    }\n  "]
+        })
+    ], PlayerComponent);
+    return PlayerComponent;
+    var PlayerComponent_1;
+}());
+
 
 
 /***/ }),
@@ -1253,6 +1387,48 @@ var VectorEditorComponent = /** @class */ (function () {
     ], VectorEditorComponent);
     return VectorEditorComponent;
     var VectorEditorComponent_1;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/vector.pipe.ts":
+/*!********************************!*\
+  !*** ./src/app/vector.pipe.ts ***!
+  \********************************/
+/*! exports provided: VectorPipe */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VectorPipe", function() { return VectorPipe; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+var VectorPipe = /** @class */ (function () {
+    function VectorPipe() {
+    }
+    VectorPipe_1 = VectorPipe;
+    VectorPipe.prototype.transform = function (v) {
+        if (v == null) {
+            return 'null';
+        }
+        return "(" + v.x.toExponential(VectorPipe_1.DIGITS) + ", " + v.y.toExponential(VectorPipe_1.DIGITS) + ", " + v.z.toExponential(VectorPipe_1.DIGITS) + ")";
+    };
+    VectorPipe.DIGITS = 1;
+    VectorPipe = VectorPipe_1 = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Pipe"])({
+            name: 'vector'
+        })
+    ], VectorPipe);
+    return VectorPipe;
+    var VectorPipe_1;
 }());
 
 
