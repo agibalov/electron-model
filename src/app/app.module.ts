@@ -13,6 +13,8 @@ import {VectorEditorComponent} from './vector-editor.component';
 import {TrajectoryDirective} from './trajectory.directive';
 import {ExponentialPipe} from './exponential.pipe';
 import {AxesDirective} from './axes.directive';
+import {PlayerComponent} from './player.component';
+import {VectorPipe} from './vector.pipe';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import {AxesDirective} from './axes.directive';
     VectorEditorComponent,
     TrajectoryDirective,
     ExponentialPipe,
-    AxesDirective
+    VectorPipe,
+    AxesDirective,
+    PlayerComponent
   ],
   imports: [
     BrowserModule,

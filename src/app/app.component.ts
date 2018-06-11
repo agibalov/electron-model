@@ -8,7 +8,7 @@ import {LorentzService, Sample} from './lorentz.service';
   template: `
     <div class="root-container">
       <div class="top-container">
-        <canvas class="scene-view" 
+        <canvas class="scene-view"
                 manipulator
                 (manipulationBegin)="cameraDriver.handleManipulationBegin(three.camera)"
                 (manipulationRotationUpdate)="cameraDriver.handleRotationUpdate($event)"
@@ -20,15 +20,15 @@ import {LorentzService, Sample} from './lorentz.service';
           <scene>
             <light [position]="cameraDriver.cameraPosition" [target]="cameraDriver.cameraTarget"></light>
             <electron *ngIf="showElectron" [position]="currentSample.position.clone().multiplyScalar(1e-5)"></electron>
-            <trajectory *ngIf="showTrajectory" [samples]="lorentzService.trajectory"></trajectory>
+            <trajectory *ngIf="showTrajectory" [samples]="lorentzService.samples"></trajectory>
             <grid *ngIf="showGrid"></grid>
             <axes *ngIf="showAxes"></axes>
           </scene>
         </canvas>
         <div class="right-panel">
-          <vector-editor name="Start Velocity" [range]="1e6" [(ngModel)]="lorentzService.startVelocity"></vector-editor>
-          <vector-editor name="Electric Field" [range]="1e-5" [(ngModel)]="lorentzService.electricField"></vector-editor>
-          <vector-editor name="Magnetic Field" [range]="1e-10" [(ngModel)]="lorentzService.magneticField"></vector-editor>
+          <vector-editor name="Start Velocity (m/s)" [range]="1e6" [(ngModel)]="lorentzService.startVelocity"></vector-editor>
+          <vector-editor name="Electric Field (V/m)" [range]="1e-5" [(ngModel)]="lorentzService.electricField"></vector-editor>
+          <vector-editor name="Magnetic Field (T)" [range]="1e-10" [(ngModel)]="lorentzService.magneticField"></vector-editor>
 
           <pre class="checkboxes">
 
@@ -40,26 +40,21 @@ import {LorentzService, Sample} from './lorentz.service';
 <span class="has-text-weight-bold">Number of Samples</span>: <input type="range" class="slider is-small is-circle is-success"
                                                                     [min]="10" [max]="5000" [step]="1"
                                                                     [(ngModel)]="lorentzService.numberOfSamples"> ({{lorentzService.numberOfSamples}})
-<span class="has-text-weight-bold">Time of Flight</span>: <input type="range" class="slider is-small is-circle is-success"
+<span class="has-text-weight-bold">Time of Flight (s)</span>: <input type="range" class="slider is-small is-circle is-success"
                                                                  [min]="0.1" [max]="10" [step]="1e-3"
                                                                  [(ngModel)]="lorentzService.timeOfFlight"> ({{lorentzService.timeOfFlight | exponential}})
           </pre>
+          <app-player [numberOfSamples]="lorentzService.numberOfSamples"
+                      [(currentSampleIndex)]="currentSampleIndex"></app-player>
         </div>
       </div>
       <div class="bottom-container">
         <div class="container is-fluid">
-          <input type="range" class="slider is-small is-fullwidth"
-                 [min]="0"
-                 [max]="lorentzService.trajectory.length - 1"
-                 [step]="1"
-                 [(ngModel)]="currentSampleIndex">
-          <p>{{currentSampleIndex + 1}} / {{lorentzService.trajectory.length}}</p>
-
-          <pre class="debug">
+          <pre>
 timestamp: {{currentSample.timestamp | exponential}}
-position: ({{currentSample.position.x | exponential}}, {{currentSample.position.y | exponential}}, {{currentSample.position.z | exponential}})
-velocity: ({{currentSample.velocity.x | exponential}}, {{currentSample.velocity.y | exponential}}, {{currentSample.velocity.z | exponential}})
-acceleration: ({{currentSample.acceleration.x | exponential}}, {{currentSample.acceleration.y | exponential}}, {{currentSample.acceleration.z | exponential}})</pre>
+position: {{currentSample.position | vector}}
+velocity: {{currentSample.velocity | vector}}
+acceleration: {{currentSample.acceleration | vector}}</pre>
         </div>
       </div>
     </div>
@@ -97,12 +92,6 @@ acceleration: ({{currentSample.acceleration.x | exponential}}, {{currentSample.a
       padding: 0;
       margin: 0;
     }
-    
-    .debug {
-      padding: 0;
-      margin: 0;
-      font-size: 10px;
-    }
   `]
   // tslint:enable:no-trailing-whitespace max-line-length
 })
@@ -117,15 +106,15 @@ export class AppComponent {
 
   // TODO: how do I get rid of duplicate Math.min() in get/set currentSampleIndex?
   get currentSampleIndex() {
-    this._currentSampleIndex = Math.min(this._currentSampleIndex, this.lorentzService.trajectory.length - 1);
+    this._currentSampleIndex = Math.min(this._currentSampleIndex, this.lorentzService.samples.length - 1);
     return this._currentSampleIndex;
   }
 
   set currentSampleIndex(value: number) {
-    this._currentSampleIndex = Math.min(value, this.lorentzService.trajectory.length - 1);
+    this._currentSampleIndex = Math.min(value, this.lorentzService.samples.length - 1);
   }
 
   get currentSample(): Sample {
-    return this.lorentzService.trajectory[this.currentSampleIndex];
+    return this.lorentzService.samples[this.currentSampleIndex];
   }
 }

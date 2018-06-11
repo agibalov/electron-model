@@ -80,7 +80,7 @@ export class LorentzService {
     return this._timeOfFlight;
   }
 
-  get trajectory(): Sample[] {
+  get samples(): Sample[] {
     if (this._shouldRecalculate) {
       this._shouldRecalculate = false;
 

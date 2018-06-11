@@ -6,6 +6,7 @@ import {Directive, OnDestroy, OnInit} from '@angular/core';
   selector: 'grid'
 })
 export class GridDirective implements OnInit, OnDestroy {
+  private static readonly SCALE = 1e-1;
   private line: Line;
 
   constructor(private scene: Scene) {
@@ -21,6 +22,7 @@ export class GridDirective implements OnInit, OnDestroy {
       color: 0x7766ff
     });
     this.line = new Line(geometry, material);
+    this.line.scale.set(GridDirective.SCALE, GridDirective.SCALE, GridDirective.SCALE);
   }
 
   ngOnInit(): void {
