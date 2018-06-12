@@ -19,7 +19,7 @@ import {LorentzService, Sample} from './lorentz.service';
           <camera [position]="cameraDriver.cameraPosition" [target]="cameraDriver.cameraTarget" fov="60"></camera>
           <scene>
             <light [position]="cameraDriver.cameraPosition" [target]="cameraDriver.cameraTarget"></light>
-            <electron *ngIf="showElectron" [position]="currentSample.position.clone().multiplyScalar(1e-5)"></electron>
+            <electron *ngIf="showElectron" [position]="currentSample.position"></electron>
             <trajectory *ngIf="showTrajectory" [samples]="lorentzService.samples"></trajectory>
             <grid *ngIf="showGrid"></grid>
             <axes *ngIf="showAxes"></axes>

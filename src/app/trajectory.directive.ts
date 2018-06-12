@@ -7,7 +7,7 @@ import {Sample} from './lorentz.service';
   selector: 'trajectory'
 })
 export class TrajectoryDirective implements OnInit, OnDestroy {
-  private readonly scale = 1e-5;
+  private static readonly SCALE = 1e-5;
   private geometry: BufferGeometry = new BufferGeometry();
   private positionAttribute: Float32BufferAttribute;
   private line: Line;
@@ -21,7 +21,7 @@ export class TrajectoryDirective implements OnInit, OnDestroy {
       color: 0x00ff00
     });
     this.line = new Line(this.geometry, material);
-    this.line.scale.set(this.scale, this.scale, this.scale);
+    this.line.scale.set(TrajectoryDirective.SCALE, TrajectoryDirective.SCALE, TrajectoryDirective.SCALE);
   }
 
   @Input() set samples(samples: Sample[]) {

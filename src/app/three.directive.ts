@@ -43,7 +43,6 @@ export class ThreeDirective implements OnInit, OnDestroy, AfterContentChecked {
   }
 
   ngAfterContentChecked(): void {
-    this.updateRendererAndCameraIfNeeded();
     this.render();
   }
 
@@ -64,7 +63,7 @@ export class ThreeDirective implements OnInit, OnDestroy, AfterContentChecked {
         this.camera.updateProjectionMatrix();
       }
 
-      this.renderer.render(this.scene, this.camera);
+      this.render();
     }
   }
 }
