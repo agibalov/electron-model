@@ -15,6 +15,7 @@ import {ExponentialPipe} from './exponential.pipe';
 import {AxesDirective} from './axes.directive';
 import {PlayerComponent} from './player.component';
 import {VectorPipe} from './vector.pipe';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {VectorPipe} from './vector.pipe';
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
