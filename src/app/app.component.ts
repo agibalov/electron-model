@@ -42,6 +42,9 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
               <i class="fas fa-angle-double-up"></i>
             </button>
           </div>
+          <div class="copyright-overlay">
+            &copy; 2018 by <a href="http://agibalov.io" target="_blank">Andrey Agibalov</a>
+          </div>
         </div>
         <div class="right-panel" [@rightPanelState]="rightPanelState">
           <div class="content">
@@ -114,6 +117,14 @@ acceleration: {{currentSample.acceleration | vector}}</pre>
       position: absolute;
       left: 10px;
       bottom: 10px;
+    }
+    
+    .scene-view .copyright-overlay {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 3px;
     }
     
     .right-panel {
