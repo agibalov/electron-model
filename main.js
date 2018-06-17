@@ -36,12 +36,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _camera_driver__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./camera-driver */ "./src/app/camera-driver.ts");
 /* harmony import */ var _lorentz_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lorentz.service */ "./src/app/lorentz.service.ts");
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/animations */ "./node_modules/@angular/animations/fesm5/animations.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -54,7 +56,35 @@ var AppComponent = /** @class */ (function () {
         this.showAxes = true;
         this.cameraDriver = new _camera_driver__WEBPACK_IMPORTED_MODULE_1__["CameraDriver"]();
         this._currentSampleIndex = 0;
+        this.isRightPanelExpanded = true;
+        this.isBottomPanelExpanded = true;
     }
+    Object.defineProperty(AppComponent.prototype, "rightPanelState", {
+        get: function () {
+            return this.isRightPanelExpanded ? 'expanded' : 'collapsed';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    AppComponent.prototype.expandRightPanel = function () {
+        this.isRightPanelExpanded = true;
+    };
+    AppComponent.prototype.collapseRightPanel = function () {
+        this.isRightPanelExpanded = false;
+    };
+    Object.defineProperty(AppComponent.prototype, "bottomPanelState", {
+        get: function () {
+            return this.isBottomPanelExpanded ? 'expanded' : 'collapsed';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    AppComponent.prototype.expandBottomPanel = function () {
+        this.isBottomPanelExpanded = true;
+    };
+    AppComponent.prototype.collapseBottomPanel = function () {
+        this.isBottomPanelExpanded = false;
+    };
     Object.defineProperty(AppComponent.prototype, "currentSampleIndex", {
         // TODO: how do I get rid of duplicate Math.min() in get/set currentSampleIndex?
         get: function () {
@@ -78,8 +108,30 @@ var AppComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-root',
             // tslint:disable:no-trailing-whitespace max-line-length
-            template: "\n    <div class=\"root-container\">\n      <div class=\"top-container\">\n        <canvas class=\"scene-view\"\n                manipulator\n                (manipulationBegin)=\"cameraDriver.handleManipulationBegin(three.camera)\"\n                (manipulationRotationUpdate)=\"cameraDriver.handleRotationUpdate($event)\"\n                (manipulationTranslationUpdate)=\"cameraDriver.handleTranslationUpdate($event)\"\n                (manipulationZoomUpdate)=\"cameraDriver.handleZoomUpdate($event)\"\n                (manipulationEnd)=\"cameraDriver.handleManipulationEnd()\"\n                three #three=\"three\">\n          <camera [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\" fov=\"60\"></camera>\n          <scene>\n            <light [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\"></light>\n            <electron *ngIf=\"showElectron\" [position]=\"currentSample.position.clone().multiplyScalar(1e-5)\"></electron>\n            <trajectory *ngIf=\"showTrajectory\" [samples]=\"lorentzService.samples\"></trajectory>\n            <grid *ngIf=\"showGrid\"></grid>\n            <axes *ngIf=\"showAxes\"></axes>\n          </scene>\n        </canvas>\n        <div class=\"right-panel\">\n          <vector-editor name=\"Start Velocity (m/s)\" [range]=\"1e6\" [(ngModel)]=\"lorentzService.startVelocity\"></vector-editor>\n          <vector-editor name=\"Electric Field (V/m)\" [range]=\"1e-5\" [(ngModel)]=\"lorentzService.electricField\"></vector-editor>\n          <vector-editor name=\"Magnetic Field (T)\" [range]=\"1e-10\" [(ngModel)]=\"lorentzService.magneticField\"></vector-editor>\n\n          <pre class=\"checkboxes\">\n\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showElectron\"> Show electron</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showTrajectory\"> Show trajectory</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showGrid\"> Show grid</label>\n<label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showAxes\"> Show axes</label>\n          \n<span class=\"has-text-weight-bold\">Number of Samples</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                    [min]=\"10\" [max]=\"5000\" [step]=\"1\"\n                                                                    [(ngModel)]=\"lorentzService.numberOfSamples\"> ({{lorentzService.numberOfSamples}})\n<span class=\"has-text-weight-bold\">Time of Flight (s)</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                 [min]=\"0.1\" [max]=\"10\" [step]=\"1e-3\"\n                                                                 [(ngModel)]=\"lorentzService.timeOfFlight\"> ({{lorentzService.timeOfFlight | exponential}})\n          </pre>\n          <app-player [numberOfSamples]=\"lorentzService.numberOfSamples\"\n                      [(currentSampleIndex)]=\"currentSampleIndex\"></app-player>\n        </div>\n      </div>\n      <div class=\"bottom-container\">\n        <div class=\"container is-fluid\">\n          <pre>\ntimestamp: {{currentSample.timestamp | exponential}}\nposition: {{currentSample.position | vector}}\nvelocity: {{currentSample.velocity | vector}}\nacceleration: {{currentSample.acceleration | vector}}</pre>\n        </div>\n      </div>\n    </div>\n  ",
-            styles: ["\n    .root-container {\n      width: 100vw;\n      height: 100vh;\n      display: flex;\n      flex-direction: column;\n    }\n    \n    .top-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: row;\n    }\n    \n    .scene-view {\n      flex-grow: 1;\n      width: 1%;\n    }\n    \n    .right-panel {\n      width: 400px;\n      padding-left: 5px;\n      overflow-y: auto;\n    }\n\n    .bottom-container {\n      padding-bottom: 5px;\n    }\n    \n    .checkboxes {\n      padding: 0;\n      margin: 0;\n    }\n  "]
+            template: "\n    <div class=\"root-container\">\n      <div class=\"top-container\">\n        <div class=\"scene-view\">\n          <canvas manipulator\n                  (manipulationBegin)=\"cameraDriver.handleManipulationBegin(three.camera)\"\n                  (manipulationRotationUpdate)=\"cameraDriver.handleRotationUpdate($event)\"\n                  (manipulationTranslationUpdate)=\"cameraDriver.handleTranslationUpdate($event)\"\n                  (manipulationZoomUpdate)=\"cameraDriver.handleZoomUpdate($event)\"\n                  (manipulationEnd)=\"cameraDriver.handleManipulationEnd()\"\n                  three #three=\"three\">\n            <camera [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\" fov=\"60\"></camera>\n            <scene>\n              <light [position]=\"cameraDriver.cameraPosition\" [target]=\"cameraDriver.cameraTarget\"></light>\n              <electron *ngIf=\"showElectron\" [position]=\"currentSample.position\"></electron>\n              <trajectory *ngIf=\"showTrajectory\" [samples]=\"lorentzService.samples\"></trajectory>\n              <grid *ngIf=\"showGrid\"></grid>\n              <axes *ngIf=\"showAxes\"></axes>\n            </scene>\n          </canvas>\n          <div class=\"right-panel-button-overlay\">\n            <button *ngIf=\"isRightPanelExpanded\" type=\"button\" class=\"button\" (click)=\"collapseRightPanel()\">\n              <i class=\"fas fa-angle-double-right\"></i>\n            </button>\n            <button *ngIf=\"!isRightPanelExpanded\" type=\"button\" class=\"button\" (click)=\"expandRightPanel()\">\n              <i class=\"fas fa-angle-double-left\"></i>\n            </button>\n          </div>\n          <div class=\"bottom-panel-button-overlay\">\n            <button *ngIf=\"isBottomPanelExpanded\" type=\"button\" class=\"button\" (click)=\"collapseBottomPanel()\">\n              <i class=\"fas fa-angle-double-down\"></i>\n            </button>\n            <button *ngIf=\"!isBottomPanelExpanded\" type=\"button\" class=\"button\" (click)=\"expandBottomPanel()\">\n              <i class=\"fas fa-angle-double-up\"></i>\n            </button>\n          </div>\n          <div class=\"copyright-overlay\">\n            &copy; 2018 by <a href=\"http://agibalov.io\" target=\"_blank\">Andrey Agibalov</a>\n          </div>\n        </div>\n        <div class=\"right-panel\" [@rightPanelState]=\"rightPanelState\">\n          <div class=\"content\">\n            <vector-editor name=\"Start Velocity (m/s)\" [range]=\"1e6\" [(ngModel)]=\"lorentzService.startVelocity\"></vector-editor>\n            <vector-editor name=\"Electric Field (V/m)\" [range]=\"1e-5\" [(ngModel)]=\"lorentzService.electricField\"></vector-editor>\n            <vector-editor name=\"Magnetic Field (T)\" [range]=\"1e-10\" [(ngModel)]=\"lorentzService.magneticField\"></vector-editor>\n  \n            <pre class=\"checkboxes\">\n  \n  <label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showElectron\"> Show electron</label>\n  <label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showTrajectory\"> Show trajectory</label>\n  <label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showGrid\"> Show grid</label>\n  <label class=\"checkbox\"><input type=\"checkbox\" [(ngModel)]=\"showAxes\"> Show axes</label>\n            \n  <span class=\"has-text-weight-bold\">Number of Samples</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                      [min]=\"10\" [max]=\"5000\" [step]=\"1\"\n                                                                      [(ngModel)]=\"lorentzService.numberOfSamples\"> ({{lorentzService.numberOfSamples}})\n  <span class=\"has-text-weight-bold\">Time of Flight (s)</span>: <input type=\"range\" class=\"slider is-small is-circle is-success\"\n                                                                       [min]=\"0.1\" [max]=\"10\" [step]=\"1e-3\"\n                                                                       [(ngModel)]=\"lorentzService.timeOfFlight\"> ({{lorentzService.timeOfFlight | exponential}})\n            </pre>\n            <app-player [numberOfSamples]=\"lorentzService.numberOfSamples\"\n                        [(currentSampleIndex)]=\"currentSampleIndex\"></app-player>\n          </div>\n        </div>\n      </div>\n      <div class=\"bottom-container\" [@bottomPanelState]=\"bottomPanelState\">\n        <div class=\"container is-fluid\">\n          <pre>\ntimestamp: {{currentSample.timestamp | exponential}}\nposition: {{currentSample.position | vector}}\nvelocity: {{currentSample.velocity | vector}}\nacceleration: {{currentSample.acceleration | vector}}</pre>\n        </div>\n      </div>\n    </div>\n  ",
+            styles: ["\n    .root-container {\n      width: 100vw;\n      height: 100vh;\n      display: flex;\n      flex-direction: column;\n    }\n    \n    .top-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: row;\n    }\n    \n    .scene-view {\n      flex-grow: 1;\n      width: 1%;\n      position: relative;\n    }\n    \n    .scene-view canvas {\n      width: 100%;\n      height: 100%;\n    }\n    \n    .scene-view .right-panel-button-overlay {\n      position: absolute;\n      right: 10px;\n      top: 10px;\n    }\n\n    .scene-view .bottom-panel-button-overlay {\n      position: absolute;\n      left: 10px;\n      bottom: 10px;\n    }\n    \n    .scene-view .copyright-overlay {\n      position: absolute;\n      right: 10px;\n      bottom: 10px;\n      background-color: rgba(0, 0, 0, 0.8);\n      padding: 3px;\n    }\n    \n    .right-panel {\n      width: 400px;\n      overflow-x: hidden;\n      overflow-y: auto;\n    }\n    \n    .right-panel .content {\n      width: 400px;\n      padding: 10px;\n    }\n\n    .bottom-container {\n      padding-bottom: 5px;\n    }\n    \n    .checkboxes {\n      padding: 0;\n      margin: 0;\n    }\n  "],
+            animations: [
+                Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["trigger"])('rightPanelState', [
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["state"])('expanded', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["style"])({
+                        width: '400px',
+                        minWidth: '400px'
+                    })),
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["state"])('collapsed', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["style"])({
+                        width: '0',
+                        minWidth: '0'
+                    })),
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["transition"])('expanded => collapsed', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["animate"])('200ms ease-in-out')),
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["transition"])('collapsed => expanded', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["animate"])('200ms ease-in-out'))
+                ]),
+                Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["trigger"])('bottomPanelState', [
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["state"])('expanded', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["style"])({})),
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["state"])('collapsed', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["style"])({
+                        height: '0'
+                    })),
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["transition"])('expanded => collapsed', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["animate"])('200ms ease-in-out')),
+                    Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["transition"])('collapsed => expanded', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_3__["animate"])('200ms ease-in-out'))
+                ])
+            ]
             // tslint:enable:no-trailing-whitespace max-line-length
         })
     ], AppComponent);
@@ -117,12 +169,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _axes_directive__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./axes.directive */ "./src/app/axes.directive.ts");
 /* harmony import */ var _player_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./player.component */ "./src/app/player.component.ts");
 /* harmony import */ var _vector_pipe__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./vector.pipe */ "./src/app/vector.pipe.ts");
+/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -163,7 +217,8 @@ var AppModule = /** @class */ (function () {
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_10__["FormsModule"]
+                _angular_forms__WEBPACK_IMPORTED_MODULE_10__["FormsModule"],
+                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_17__["BrowserAnimationsModule"]
             ],
             providers: [],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_2__["AppComponent"]]
@@ -422,9 +477,11 @@ var ElectronDirective = /** @class */ (function () {
         });
         this.mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, material);
     }
+    ElectronDirective_1 = ElectronDirective;
     Object.defineProperty(ElectronDirective.prototype, "position", {
         set: function (position) {
             this.mesh.position.set(position.x, position.y, position.z);
+            this.mesh.position.multiplyScalar(ElectronDirective_1.SCALE);
         },
         enumerable: true,
         configurable: true
@@ -435,12 +492,13 @@ var ElectronDirective = /** @class */ (function () {
     ElectronDirective.prototype.ngOnDestroy = function () {
         this.scene.remove(this.mesh);
     };
+    ElectronDirective.SCALE = 1e-5;
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
         __metadata("design:type", three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]),
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]])
     ], ElectronDirective.prototype, "position", null);
-    ElectronDirective = __decorate([
+    ElectronDirective = ElectronDirective_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
             // tslint:disable-next-line:directive-selector
             selector: 'electron'
@@ -448,6 +506,7 @@ var ElectronDirective = /** @class */ (function () {
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Scene"]])
     ], ElectronDirective);
     return ElectronDirective;
+    var ElectronDirective_1;
 }());
 
 
@@ -1157,7 +1216,6 @@ var ThreeDirective = /** @class */ (function () {
         }, 1000);
     };
     ThreeDirective.prototype.ngAfterContentChecked = function () {
-        this.updateRendererAndCameraIfNeeded();
         this.render();
     };
     ThreeDirective.prototype.updateRendererAndCameraIfNeeded = function () {
@@ -1173,7 +1231,7 @@ var ThreeDirective = /** @class */ (function () {
                 this.camera.aspect = clientWidth / clientHeight;
                 this.camera.updateProjectionMatrix();
             }
-            this.renderer.render(this.scene, this.camera);
+            this.render();
         }
     };
     ThreeDirective = __decorate([
@@ -1217,7 +1275,6 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var TrajectoryDirective = /** @class */ (function () {
     function TrajectoryDirective(scene) {
         this.scene = scene;
-        this.scale = 1e-5;
         this.geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BufferGeometry"]();
         this.positionAttribute = new three__WEBPACK_IMPORTED_MODULE_0__["Float32BufferAttribute"](new Float32Array(3 * 5000), 3);
         this.positionAttribute.setDynamic(true);
@@ -1226,8 +1283,9 @@ var TrajectoryDirective = /** @class */ (function () {
             color: 0x00ff00
         });
         this.line = new three__WEBPACK_IMPORTED_MODULE_0__["Line"](this.geometry, material);
-        this.line.scale.set(this.scale, this.scale, this.scale);
+        this.line.scale.set(TrajectoryDirective_1.SCALE, TrajectoryDirective_1.SCALE, TrajectoryDirective_1.SCALE);
     }
+    TrajectoryDirective_1 = TrajectoryDirective;
     Object.defineProperty(TrajectoryDirective.prototype, "samples", {
         set: function (samples) {
             this.positionAttribute.copyVector3sArray(samples.map(function (s) { return s.position; }));
@@ -1243,12 +1301,13 @@ var TrajectoryDirective = /** @class */ (function () {
     TrajectoryDirective.prototype.ngOnDestroy = function () {
         this.scene.remove(this.line);
     };
+    TrajectoryDirective.SCALE = 1e-5;
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
         __metadata("design:type", Array),
         __metadata("design:paramtypes", [Array])
     ], TrajectoryDirective.prototype, "samples", null);
-    TrajectoryDirective = __decorate([
+    TrajectoryDirective = TrajectoryDirective_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
             // tslint:disable-next-line:directive-selector
             selector: 'trajectory'
@@ -1256,6 +1315,7 @@ var TrajectoryDirective = /** @class */ (function () {
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Scene"]])
     ], TrajectoryDirective);
     return TrajectoryDirective;
+    var TrajectoryDirective_1;
 }());
 
 
