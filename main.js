@@ -11,7 +11,7 @@ function webpackEmptyAsyncContext(req) {
 	// Here Promise.resolve().then() is used instead of new Promise() to prevent
 	// uncaught exception popping up in devtools
 	return Promise.resolve().then(function() {
-		var e = new Error('Cannot find module "' + req + '".');
+		var e = new Error("Cannot find module '" + req + "'");
 		e.code = 'MODULE_NOT_FOUND';
 		throw e;
 	});
@@ -492,6 +492,7 @@ var ElectronDirective = /** @class */ (function () {
     ElectronDirective.prototype.ngOnDestroy = function () {
         this.scene.remove(this.mesh);
     };
+    var ElectronDirective_1;
     ElectronDirective.SCALE = 1e-5;
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -506,7 +507,6 @@ var ElectronDirective = /** @class */ (function () {
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Scene"]])
     ], ElectronDirective);
     return ElectronDirective;
-    var ElectronDirective_1;
 }());
 
 
@@ -596,6 +596,7 @@ var GridDirective = /** @class */ (function () {
     GridDirective.prototype.ngOnDestroy = function () {
         this.scene.remove(this.line);
     };
+    var GridDirective_1;
     GridDirective.SCALE = 1e-1;
     GridDirective = GridDirective_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
@@ -605,7 +606,6 @@ var GridDirective = /** @class */ (function () {
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Scene"]])
     ], GridDirective);
     return GridDirective;
-    var GridDirective_1;
 }());
 
 
@@ -1074,6 +1074,7 @@ var PlayerComponent = /** @class */ (function () {
             ++this.currentSampleIndex;
         }
     };
+    var PlayerComponent_1;
     PlayerComponent.DESIRED_PLAYBACK_TIME = 3000;
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
@@ -1097,7 +1098,6 @@ var PlayerComponent = /** @class */ (function () {
         })
     ], PlayerComponent);
     return PlayerComponent;
-    var PlayerComponent_1;
 }());
 
 
@@ -1301,6 +1301,7 @@ var TrajectoryDirective = /** @class */ (function () {
     TrajectoryDirective.prototype.ngOnDestroy = function () {
         this.scene.remove(this.line);
     };
+    var TrajectoryDirective_1;
     TrajectoryDirective.SCALE = 1e-5;
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -1315,7 +1316,6 @@ var TrajectoryDirective = /** @class */ (function () {
         __metadata("design:paramtypes", [three__WEBPACK_IMPORTED_MODULE_0__["Scene"]])
     ], TrajectoryDirective);
     return TrajectoryDirective;
-    var TrajectoryDirective_1;
 }());
 
 
@@ -1423,6 +1423,7 @@ var VectorEditorComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    var VectorEditorComponent_1;
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
@@ -1446,7 +1447,6 @@ var VectorEditorComponent = /** @class */ (function () {
         })
     ], VectorEditorComponent);
     return VectorEditorComponent;
-    var VectorEditorComponent_1;
 }());
 
 
@@ -1481,6 +1481,7 @@ var VectorPipe = /** @class */ (function () {
         }
         return "(" + v.x.toExponential(VectorPipe_1.DIGITS) + ", " + v.y.toExponential(VectorPipe_1.DIGITS) + ", " + v.z.toExponential(VectorPipe_1.DIGITS) + ")";
     };
+    var VectorPipe_1;
     VectorPipe.DIGITS = 1;
     VectorPipe = VectorPipe_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Pipe"])({
@@ -1488,7 +1489,6 @@ var VectorPipe = /** @class */ (function () {
         })
     ], VectorPipe);
     return VectorPipe;
-    var VectorPipe_1;
 }());
 
 
