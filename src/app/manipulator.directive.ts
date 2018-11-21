@@ -22,7 +22,7 @@ export class ManipulatorDirective {
   @HostListener('mousedown', ['$event'])
   @HostListener('mouseup', ['$event'])
   onMouseEvent(e: MouseEvent) {
-    const bounds: {width: number, height: number} = (<any>event.target).getBoundingClientRect();
+    const bounds: {width: number, height: number} = (<any>e.target).getBoundingClientRect();
     const x = e.layerX / bounds.width;
     const y = e.layerY / bounds.width;
 

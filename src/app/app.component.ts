@@ -48,9 +48,9 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
         </div>
         <div class="right-panel" [@rightPanelState]="rightPanelState">
           <div class="content">
-            <vector-editor name="Start Velocity (m/s)" [range]="1e6" [(ngModel)]="lorentzService.startVelocity"></vector-editor>
-            <vector-editor name="Electric Field (V/m)" [range]="1e-5" [(ngModel)]="lorentzService.electricField"></vector-editor>
-            <vector-editor name="Magnetic Field (T)" [range]="1e-10" [(ngModel)]="lorentzService.magneticField"></vector-editor>
+            <app-vector-editor name="Start Velocity (m/s)" [range]="1e6" [(ngModel)]="lorentzService.startVelocity"></app-vector-editor>
+            <app-vector-editor name="Electric Field (V/m)" [range]="1e-5" [(ngModel)]="lorentzService.electricField"></app-vector-editor>
+            <app-vector-editor name="Magnetic Field (T)" [range]="1e-10" [(ngModel)]="lorentzService.magneticField"></app-vector-editor>
   
             <pre class="checkboxes">
   
@@ -105,6 +105,7 @@ acceleration: {{currentSample.acceleration | vector}}</pre>
     .scene-view canvas {
       width: 100%;
       height: 100%;
+      position: absolute;
     }
     
     .scene-view .right-panel-button-overlay {
@@ -128,13 +129,11 @@ acceleration: {{currentSample.acceleration | vector}}</pre>
     }
     
     .right-panel {
-      width: 400px;
       overflow-x: hidden;
       overflow-y: auto;
     }
     
     .right-panel .content {
-      width: 400px;
       padding: 10px;
     }
 
@@ -146,12 +145,16 @@ acceleration: {{currentSample.acceleration | vector}}</pre>
       padding: 0;
       margin: 0;
     }
+
+    input.slider {
+      margin: 0;
+    }
   `],
   animations: [
     trigger('rightPanelState', [
       state('expanded', style({
-        width: '400px',
-        minWidth: '400px'
+        width: '450px',
+        minWidth: '450px'
       })),
       state('collapsed', style({
         width: '0',

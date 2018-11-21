@@ -3,7 +3,7 @@ import {Vector3} from 'three';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
-  selector: 'vector-editor',
+  selector: 'app-vector-editor',
   template: `
     <pre>
 <ng-container *ngIf="name != null"><span class="has-text-weight-bold">{{name}}</span>
