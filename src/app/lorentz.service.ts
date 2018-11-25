@@ -5,14 +5,30 @@ export class LorentzService {
   private readonly particleCharge = 1.6e-19;
   private readonly minSubSampleTimeChange = 1e-4;
 
-  private _electricField: Vector3 = new Vector3(1e-7, 0, 0);
-  private _magneticField: Vector3 = new Vector3(1e-10, 0, 0);
-  private _startVelocity: Vector3 = new Vector3(0, 3e5, 0);
-  private _startPosition: Vector3 = new Vector3(0, 0, 0);
-  private _numberOfSamples = 500;
-  private _timeOfFlight = 5;
+  private _electricField: Vector3;
+  private _magneticField: Vector3;
+  private _startVelocity: Vector3;
+  private _startPosition: Vector3;
+  private _numberOfSamples;
+  private _timeOfFlight;
   private _samples: Sample[];
   private _shouldRecalculate = true;
+
+  constructor(
+    electricField: Vector3,
+    magneticField: Vector3,
+    startVelocity: Vector3,
+    startPosition: Vector3,
+    numberOfSamples: number,
+    timeOfFlight: number) {
+
+    this._electricField = electricField;
+    this._magneticField = magneticField;
+    this._startVelocity = startVelocity;
+    this._startPosition = startPosition;
+    this._numberOfSamples = numberOfSamples;
+    this._timeOfFlight = timeOfFlight;
+  }
 
   set electricField(value: Vector3) {
     if (this._electricField !== value) {
@@ -126,12 +142,12 @@ export class LorentzService {
 
 export class Sample {
   constructor(
-    public timestamp: number,
-    public position: Vector3,
-    public velocity: Vector3,
-    public acceleration: Vector3,
-    public electricForce: Vector3,
-    public magneticForce: Vector3,
-    public lorentzForce: Vector3) {
+    public readonly timestamp: number,
+    public readonly position: Vector3,
+    public readonly velocity: Vector3,
+    public readonly acceleration: Vector3,
+    public readonly electricForce: Vector3,
+    public readonly magneticForce: Vector3,
+    public readonly lorentzForce: Vector3) {
   }
 }

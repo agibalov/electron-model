@@ -1,12 +1,39 @@
 import {Camera, Vector2, Vector3} from 'three';
 
-export class CameraDriver {
-  cameraTarget = new Vector3(0, 0, 0);
+export interface CameraDriverState {
+  tx: number;
+  ty: number;
+  tz: number;
+  phi: number;
+  theta: number;
+  distance: number;
+}
 
-  private cameraPhi = Math.PI / 4;
-  private cameraTheta = -Math.PI / 6;
-  private cameraDistance = 1.3;
+export class CameraDriver {
+  cameraTarget: Vector3;
+
+  private cameraPhi: number;
+  private cameraTheta: number;
+  private cameraDistance: number;
   private manipulation: Manipulation = null;
+
+  constructor(targetX: number, targetY: number, targetZ: number, phi: number, theta: number, distance: number) {
+    this.cameraTarget = new Vector3(targetX, targetY, targetZ);
+    this.cameraPhi = phi;
+    this.cameraTheta = theta;
+    this.cameraDistance = distance;
+  }
+
+  get state(): CameraDriverState {
+    return {
+      tx: this.cameraTarget.x,
+      ty: this.cameraTarget.y,
+      tz: this.cameraTarget.z,
+      phi: this.cameraPhi,
+      theta: this.cameraTheta,
+      distance: this.cameraDistance
+    };
+  }
 
   get cameraPosition() {
     const position = new Vector3(
