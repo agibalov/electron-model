@@ -1,0 +1,8 @@
+<pre>
+<ng-container *ngIf="name != null"><span class="has-text-weight-bold">{{name}}</span>
+</ng-container>  X: <input type="range" class="slider is-small is-circle is-success" [min]="-inputRange" [max]="inputRange"
+                           [step]="inputStep" [(ngModel)]="visualX"> ({{realX|exponential}})
+  Y: <input type="range" class="slider is-small is-circle is-success" [min]="-inputRange" [max]="inputRange" [step]="inputStep"
+            [(ngModel)]="visualY"> ({{realY|exponential}})
+  Z: <input type="range" class="slider is-small is-circle is-success" [min]="-inputRange" [max]="inputRange" [step]="inputStep"
+            [(ngModel)]="visualZ"> ({{realZ|exponential}})</pre>

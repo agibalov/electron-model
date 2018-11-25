@@ -8,17 +8,17 @@ import {ManipulatorDirective} from './manipulator.directive';
 import {GridDirective} from './grid.directive';
 import {LightDirective} from './light.directive';
 import {FormsModule} from '@angular/forms';
-import {VectorEditorComponent} from './vector-editor.component';
 import {TrajectoryDirective} from './trajectory.directive';
 import {ExponentialPipe} from './exponential.pipe';
 import {AxesDirective} from './axes.directive';
-import {PlayerComponent} from './player.component';
 import {VectorPipe} from './vector.pipe';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppComponent, AppState, BASE_URL, DEFAULT_APP_STATE } from './app.component';
 import { DOCUMENT, Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { ShareButtonsModule } from '@ngx-share/buttons';
+import { VectorEditorComponent } from './vector-editor/vector-editor.component';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
