@@ -127,9 +127,9 @@ export class AppComponent implements OnInit, OnDestroy {
         cameraTargetX: this.cameraDriver.cameraTarget.x,
         cameraTargetY: this.cameraDriver.cameraTarget.y,
         cameraTargetZ: this.cameraDriver.cameraTarget.z,
-        cameraPhi: this.cameraDriver.state.phi,
-        cameraTheta: this.cameraDriver.state.theta,
-        cameraDistance: this.cameraDriver.state.distance,
+        cameraPhi: this.cameraDriver.phi,
+        cameraTheta: this.cameraDriver.theta,
+        cameraDistance: this.cameraDriver.distance,
 
         electricFieldX: this.lorentzService.electricField.x,
         electricFieldY: this.lorentzService.electricField.y,

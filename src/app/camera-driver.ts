@@ -1,45 +1,37 @@
 import {Camera, Vector2, Vector3} from 'three';
 
-export interface CameraDriverState {
-  tx: number;
-  ty: number;
-  tz: number;
-  phi: number;
-  theta: number;
-  distance: number;
-}
-
 export class CameraDriver {
   cameraTarget: Vector3;
 
-  private cameraPhi: number;
-  private cameraTheta: number;
-  private cameraDistance: number;
+  private _cameraPhi: number;
+  private _cameraTheta: number;
+  private _cameraDistance: number;
   private manipulation: Manipulation = null;
 
   constructor(targetX: number, targetY: number, targetZ: number, phi: number, theta: number, distance: number) {
     this.cameraTarget = new Vector3(targetX, targetY, targetZ);
-    this.cameraPhi = phi;
-    this.cameraTheta = theta;
-    this.cameraDistance = distance;
+    this._cameraPhi = phi;
+    this._cameraTheta = theta;
+    this._cameraDistance = distance;
   }
 
-  get state(): CameraDriverState {
-    return {
-      tx: this.cameraTarget.x,
-      ty: this.cameraTarget.y,
-      tz: this.cameraTarget.z,
-      phi: this.cameraPhi,
-      theta: this.cameraTheta,
-      distance: this.cameraDistance
-    };
+  get phi(): number {
+    return this._cameraPhi;
+  }
+
+  get theta(): number {
+    return this._cameraTheta;
+  }
+
+  get distance(): number {
+    return this._cameraDistance;
   }
 
   get cameraPosition() {
     const position = new Vector3(
-      -Math.cos(this.cameraPhi) * Math.cos(this.cameraTheta) * this.cameraDistance,
-      -Math.sin(this.cameraTheta) * this.cameraDistance,
-      Math.sin(this.cameraPhi) * Math.cos(this.cameraTheta) * this.cameraDistance
+      -Math.cos(this._cameraPhi) * Math.cos(this._cameraTheta) * this._cameraDistance,
+      -Math.sin(this._cameraTheta) * this._cameraDistance,
+      Math.sin(this._cameraPhi) * Math.cos(this._cameraTheta) * this._cameraDistance
     ).add(this.cameraTarget);
     return position;
   }
@@ -51,8 +43,8 @@ export class CameraDriver {
     camera.matrixWorld.extractBasis(xAxis, yAxis, zAxis);
 
     this.manipulation = {
-      phiStart: this.cameraPhi,
-      thetaStart: this.cameraTheta,
+      phiStart: this._cameraPhi,
+      thetaStart: this._cameraTheta,
       translationStart: this.cameraTarget,
       horizontalAxis: xAxis.normalize(),
       verticalAxis: yAxis.normalize(),
@@ -61,8 +53,8 @@ export class CameraDriver {
   }
 
   handleRotationUpdate(position: Vector2) {
-    this.cameraPhi = this.manipulation.phiStart + position.x * 10;
-    this.cameraTheta = this.manipulation.thetaStart + position.y * 10;
+    this._cameraPhi = this.manipulation.phiStart + position.x * 10;
+    this._cameraTheta = this.manipulation.thetaStart + position.y * 10;
   }
 
   handleTranslationUpdate(position: Vector2) {
