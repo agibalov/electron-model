@@ -1,155 +1,52 @@
-import {Component} from '@angular/core';
-import {CameraDriver} from './camera-driver';
+import { Component, Inject, InjectionToken, OnDestroy, OnInit } from '@angular/core';
+import { CameraDriver} from './camera-driver';
 import {LorentzService, Sample} from './lorentz.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { interval, Subscription } from 'rxjs';
+import { Location } from '@angular/common';
+import { Vector3 } from 'three';
+import * as pako from 'pako';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+
+export interface AppState {
+  cameraTargetX: number;
+  cameraTargetY: number;
+  cameraTargetZ: number;
+  cameraPhi: number;
+  cameraTheta: number;
+  cameraDistance: number;
+
+  electricFieldX: number;
+  electricFieldY: number;
+  electricFieldZ: number;
+  magneticFieldX: number;
+  magneticFieldY: number;
+  magneticFieldZ: number;
+  startVelocityX: number;
+  startVelocityY: number;
+  startVelocityZ: number;
+  startPositionX: number;
+  startPositionY: number;
+  startPositionZ: number;
+  numberOfSamples: number;
+  timeOfFlight: number;
+
+  electron: boolean;
+  trajectory: boolean;
+  grid: boolean;
+  axes: boolean;
+  currentSample: number;
+  rightPanel: boolean;
+  bottomPanel: boolean;
+}
+
+export const BASE_URL = new InjectionToken<string>('BASE_URL');
+export const DEFAULT_APP_STATE = new InjectionToken<AppState>('DEFAULT_APP_STATE');
 
 @Component({
   selector: 'app-root',
-  // tslint:disable:no-trailing-whitespace max-line-length
-  template: `
-    <div class="root-container">
-      <div class="top-container">
-        <div class="scene-view">
-          <canvas manipulator
-                  (manipulationBegin)="cameraDriver.handleManipulationBegin(three.camera)"
-                  (manipulationRotationUpdate)="cameraDriver.handleRotationUpdate($event)"
-                  (manipulationTranslationUpdate)="cameraDriver.handleTranslationUpdate($event)"
-                  (manipulationZoomUpdate)="cameraDriver.handleZoomUpdate($event)"
-                  (manipulationEnd)="cameraDriver.handleManipulationEnd()"
-                  three #three="three">
-            <camera [position]="cameraDriver.cameraPosition" [target]="cameraDriver.cameraTarget" fov="60"></camera>
-            <scene>
-              <light [position]="cameraDriver.cameraPosition" [target]="cameraDriver.cameraTarget"></light>
-              <electron *ngIf="showElectron" [position]="currentSample.position"></electron>
-              <trajectory *ngIf="showTrajectory" [samples]="lorentzService.samples"></trajectory>
-              <grid *ngIf="showGrid"></grid>
-              <axes *ngIf="showAxes"></axes>
-            </scene>
-          </canvas>
-          <div class="right-panel-button-overlay">
-            <button *ngIf="isRightPanelExpanded" type="button" class="button" (click)="collapseRightPanel()">
-              <i class="fas fa-angle-double-right"></i>
-            </button>
-            <button *ngIf="!isRightPanelExpanded" type="button" class="button" (click)="expandRightPanel()">
-              <i class="fas fa-angle-double-left"></i>
-            </button>
-          </div>
-          <div class="bottom-panel-button-overlay">
-            <button *ngIf="isBottomPanelExpanded" type="button" class="button" (click)="collapseBottomPanel()">
-              <i class="fas fa-angle-double-down"></i>
-            </button>
-            <button *ngIf="!isBottomPanelExpanded" type="button" class="button" (click)="expandBottomPanel()">
-              <i class="fas fa-angle-double-up"></i>
-            </button>
-          </div>
-          <div class="copyright-overlay">
-            &copy; 2018 by <a href="http://agibalov.io" target="_blank">Andrey Agibalov</a>
-          </div>
-        </div>
-        <div class="right-panel" [@rightPanelState]="rightPanelState">
-          <div class="content">
-            <app-vector-editor name="Start Velocity (m/s)" [range]="1e6" [(ngModel)]="lorentzService.startVelocity"></app-vector-editor>
-            <app-vector-editor name="Electric Field (V/m)" [range]="1e-5" [(ngModel)]="lorentzService.electricField"></app-vector-editor>
-            <app-vector-editor name="Magnetic Field (T)" [range]="1e-10" [(ngModel)]="lorentzService.magneticField"></app-vector-editor>
-  
-            <pre class="checkboxes">
-  
-  <label class="checkbox"><input type="checkbox" [(ngModel)]="showElectron"> Show electron</label>
-  <label class="checkbox"><input type="checkbox" [(ngModel)]="showTrajectory"> Show trajectory</label>
-  <label class="checkbox"><input type="checkbox" [(ngModel)]="showGrid"> Show grid</label>
-  <label class="checkbox"><input type="checkbox" [(ngModel)]="showAxes"> Show axes</label>
-            
-  <span class="has-text-weight-bold">Number of Samples</span>: <input type="range" class="slider is-small is-circle is-success"
-                                                                      [min]="10" [max]="5000" [step]="1"
-                                                                      [(ngModel)]="lorentzService.numberOfSamples"> ({{lorentzService.numberOfSamples}})
-  <span class="has-text-weight-bold">Time of Flight (s)</span>: <input type="range" class="slider is-small is-circle is-success"
-                                                                       [min]="0.1" [max]="10" [step]="1e-3"
-                                                                       [(ngModel)]="lorentzService.timeOfFlight"> ({{lorentzService.timeOfFlight | exponential}})
-            </pre>
-            <app-player [numberOfSamples]="lorentzService.numberOfSamples"
-                        [(currentSampleIndex)]="currentSampleIndex"></app-player>
-          </div>
-        </div>
-      </div>
-      <div class="bottom-container" [@bottomPanelState]="bottomPanelState">
-        <div class="container is-fluid">
-          <pre>
-timestamp: {{currentSample.timestamp | exponential}}
-position: {{currentSample.position | vector}}
-velocity: {{currentSample.velocity | vector}}
-acceleration: {{currentSample.acceleration | vector}}</pre>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .root-container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .top-container {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: row;
-    }
-    
-    .scene-view {
-      flex-grow: 1;
-      width: 1%;
-      position: relative;
-    }
-    
-    .scene-view canvas {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-    }
-    
-    .scene-view .right-panel-button-overlay {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-    }
-
-    .scene-view .bottom-panel-button-overlay {
-      position: absolute;
-      left: 10px;
-      bottom: 10px;
-    }
-    
-    .scene-view .copyright-overlay {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 3px;
-    }
-    
-    .right-panel {
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-    
-    .right-panel .content {
-      padding: 10px;
-    }
-
-    .bottom-container {
-      padding-bottom: 5px;
-    }
-    
-    .checkboxes {
-      padding: 0;
-      margin: 0;
-    }
-
-    input.slider {
-      margin: 0;
-    }
-  `],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
   animations: [
     trigger('rightPanelState', [
       state('expanded', style({
@@ -174,19 +71,103 @@ acceleration: {{currentSample.acceleration | vector}}</pre>
       transition('collapsed => expanded', animate('200ms ease-in-out'))
     ])
   ]
-  // tslint:enable:no-trailing-whitespace max-line-length
 })
-export class AppComponent {
-  lorentzService = new LorentzService();
+export class AppComponent implements OnInit, OnDestroy {
+  readonly cameraDriver: CameraDriver;
+  readonly lorentzService: LorentzService;
   showElectron = true;
   showTrajectory = true;
   showGrid = true;
   showAxes = true;
-  cameraDriver = new CameraDriver();
   _currentSampleIndex = 0;
 
   isRightPanelExpanded = true;
   isBottomPanelExpanded = true;
+
+  private appStateSubscription: Subscription;
+
+  url: string;
+
+  constructor(
+    private readonly location: Location,
+    @Inject(BASE_URL) private readonly baseUrl: string,
+    @Inject(DEFAULT_APP_STATE) defaultAppState: AppState) {
+
+    let appStateOverrides = {};
+
+    const base64EncodedDeflatedAppStateJson = location.path();
+    if (base64EncodedDeflatedAppStateJson != null && base64EncodedDeflatedAppStateJson !== '') {
+      const appStateJson = pako.inflate(atob(base64EncodedDeflatedAppStateJson.substring(1)), { to: 'string' });
+      appStateOverrides = JSON.parse(appStateJson);
+    }
+
+    const appState = Object.assign(defaultAppState, appStateOverrides);
+
+    this.cameraDriver = new CameraDriver(
+      appState.cameraTargetX, appState.cameraTargetY, appState.cameraTargetZ,
+      appState.cameraPhi, appState.cameraTheta, appState.cameraDistance);
+    this.lorentzService = new LorentzService(
+      new Vector3(appState.electricFieldX, appState.electricFieldY, appState.electricFieldZ),
+      new Vector3(appState.magneticFieldX, appState.magneticFieldY, appState.magneticFieldZ),
+      new Vector3(appState.startVelocityX, appState.startVelocityY, appState.startVelocityZ),
+      new Vector3(appState.startPositionX, appState.startPositionY, appState.startPositionZ),
+      appState.numberOfSamples,
+      appState.timeOfFlight);
+    this.showElectron = appState.electron;
+    this.showTrajectory = appState.trajectory;
+    this.showGrid = appState.grid;
+    this.showAxes = appState.axes;
+    this._currentSampleIndex = appState.currentSample;
+    this.isRightPanelExpanded = appState.rightPanel;
+    this.isBottomPanelExpanded = appState.bottomPanel;
+  }
+
+  ngOnInit(): void {
+    this.appStateSubscription = interval(1000)
+      .pipe(
+        map(() => ({
+          cameraTargetX: this.cameraDriver.cameraTarget.x,
+          cameraTargetY: this.cameraDriver.cameraTarget.y,
+          cameraTargetZ: this.cameraDriver.cameraTarget.z,
+          cameraPhi: this.cameraDriver.phi,
+          cameraTheta: this.cameraDriver.theta,
+          cameraDistance: this.cameraDriver.distance,
+
+          electricFieldX: this.lorentzService.electricField.x,
+          electricFieldY: this.lorentzService.electricField.y,
+          electricFieldZ: this.lorentzService.electricField.z,
+          magneticFieldX: this.lorentzService.magneticField.x,
+          magneticFieldY: this.lorentzService.magneticField.y,
+          magneticFieldZ: this.lorentzService.magneticField.z,
+          startVelocityX: this.lorentzService.startVelocity.x,
+          startVelocityY: this.lorentzService.startVelocity.y,
+          startVelocityZ: this.lorentzService.startVelocity.z,
+          startPositionX: this.lorentzService.startPosition.x,
+          startPositionY: this.lorentzService.startPosition.y,
+          startPositionZ: this.lorentzService.startPosition.z,
+          numberOfSamples: this.lorentzService.numberOfSamples,
+          timeOfFlight: this.lorentzService.timeOfFlight,
+
+          electron: this.showElectron,
+          trajectory: this.showTrajectory,
+          grid: this.showGrid,
+          axes: this.showAxes,
+          currentSample: this._currentSampleIndex,
+          rightPanel: this.isRightPanelExpanded,
+          bottomPanel: this.isBottomPanelExpanded
+        } as AppState)),
+        distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
+      )
+      .subscribe(appState => {
+        const base64EncodedDeflatedAppStateJson = btoa(pako.deflate(JSON.stringify(appState), { to: 'string' }));
+        this.location.replaceState('', base64EncodedDeflatedAppStateJson);
+        this.url = this.baseUrl + this.location.path();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.appStateSubscription.unsubscribe();
+  }
 
   get rightPanelState() {
     return this.isRightPanelExpanded ? 'expanded' : 'collapsed';

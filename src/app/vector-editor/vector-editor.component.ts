@@ -1,29 +1,11 @@
-import {Component, forwardRef, Input} from '@angular/core';
-import {Vector3} from 'three';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Vector3 } from 'three';
 
 @Component({
   selector: 'app-vector-editor',
-  template: `
-    <pre>
-<ng-container *ngIf="name != null"><span class="has-text-weight-bold">{{name}}</span>
-</ng-container>  X: <input type="range" class="slider is-small is-circle is-success" [min]="-inputRange" [max]="inputRange"
-                           [step]="inputStep" [(ngModel)]="visualX"> ({{realX|exponential}})
-  Y: <input type="range" class="slider is-small is-circle is-success" [min]="-inputRange" [max]="inputRange" [step]="inputStep"
-            [(ngModel)]="visualY"> ({{realY|exponential}})
-  Z: <input type="range" class="slider is-small is-circle is-success" [min]="-inputRange" [max]="inputRange" [step]="inputStep"
-            [(ngModel)]="visualZ"> ({{realZ|exponential}})</pre>
-  `,
-  styles: [`
-    pre {
-      margin: 0;
-      padding: 0;
-    }
-
-    input.slider {
-      margin: 0;
-    }
-  `],
+  templateUrl: './vector-editor.component.html',
+  styleUrls: ['./vector-editor.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

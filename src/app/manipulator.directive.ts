@@ -1,6 +1,11 @@
 import {Directive, EventEmitter, HostListener, Output} from '@angular/core';
 import {Vector2} from 'three';
 
+enum ManipulationType {
+  Rotation,
+  Translation
+}
+
 @Directive({
   // tslint:disable-next-line:directive-selector
   selector: '[manipulator]'
@@ -71,7 +76,3 @@ export class ManipulatorDirective {
   }
 }
 
-enum ManipulationType {
-  Rotation,
-  Translation
-}
