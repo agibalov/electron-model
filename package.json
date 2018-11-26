@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build_prod": "ng build --base-href http://agibalov.io/electron-model/",
+    "build_prod": "ng build --prod=true --aot=false --buildOptimizer=false --optimization=false --baseHref http://agibalov.io/electron-model/",
     "deploy": "angular-cli-ghpages --dir dist/electron-model"
   },
   "private": true,
