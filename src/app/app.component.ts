@@ -6,6 +6,7 @@ import { interval, Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 import { Vector3 } from 'three';
 import * as pako from 'pako';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 export interface AppState {
   cameraTargetX: number;
@@ -83,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isRightPanelExpanded = true;
   isBottomPanelExpanded = true;
 
-  private urlGeneratorSubscription: Subscription;
+  private appStateSubscription: Subscription;
 
   url: string;
 
@@ -122,47 +123,50 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.urlGeneratorSubscription = interval(1000).subscribe(() => {
-      const appState: AppState = {
-        cameraTargetX: this.cameraDriver.cameraTarget.x,
-        cameraTargetY: this.cameraDriver.cameraTarget.y,
-        cameraTargetZ: this.cameraDriver.cameraTarget.z,
-        cameraPhi: this.cameraDriver.phi,
-        cameraTheta: this.cameraDriver.theta,
-        cameraDistance: this.cameraDriver.distance,
+    this.appStateSubscription = interval(1000)
+      .pipe(
+        map(() => ({
+          cameraTargetX: this.cameraDriver.cameraTarget.x,
+          cameraTargetY: this.cameraDriver.cameraTarget.y,
+          cameraTargetZ: this.cameraDriver.cameraTarget.z,
+          cameraPhi: this.cameraDriver.phi,
+          cameraTheta: this.cameraDriver.theta,
+          cameraDistance: this.cameraDriver.distance,
 
-        electricFieldX: this.lorentzService.electricField.x,
-        electricFieldY: this.lorentzService.electricField.y,
-        electricFieldZ: this.lorentzService.electricField.z,
-        magneticFieldX: this.lorentzService.magneticField.x,
-        magneticFieldY: this.lorentzService.magneticField.y,
-        magneticFieldZ: this.lorentzService.magneticField.z,
-        startVelocityX: this.lorentzService.startVelocity.x,
-        startVelocityY: this.lorentzService.startVelocity.y,
-        startVelocityZ: this.lorentzService.startVelocity.z,
-        startPositionX: this.lorentzService.startPosition.x,
-        startPositionY: this.lorentzService.startPosition.y,
-        startPositionZ: this.lorentzService.startPosition.z,
-        numberOfSamples: this.lorentzService.numberOfSamples,
-        timeOfFlight: this.lorentzService.timeOfFlight,
+          electricFieldX: this.lorentzService.electricField.x,
+          electricFieldY: this.lorentzService.electricField.y,
+          electricFieldZ: this.lorentzService.electricField.z,
+          magneticFieldX: this.lorentzService.magneticField.x,
+          magneticFieldY: this.lorentzService.magneticField.y,
+          magneticFieldZ: this.lorentzService.magneticField.z,
+          startVelocityX: this.lorentzService.startVelocity.x,
+          startVelocityY: this.lorentzService.startVelocity.y,
+          startVelocityZ: this.lorentzService.startVelocity.z,
+          startPositionX: this.lorentzService.startPosition.x,
+          startPositionY: this.lorentzService.startPosition.y,
+          startPositionZ: this.lorentzService.startPosition.z,
+          numberOfSamples: this.lorentzService.numberOfSamples,
+          timeOfFlight: this.lorentzService.timeOfFlight,
 
-        electron: this.showElectron,
-        trajectory: this.showTrajectory,
-        grid: this.showGrid,
-        axes: this.showAxes,
-        currentSample: this._currentSampleIndex,
-        rightPanel: this.isRightPanelExpanded,
-        bottomPanel: this.isBottomPanelExpanded
-      };
-
-      const base64EncodedDeflatedAppStateJson = btoa(pako.deflate(JSON.stringify(appState), { to: 'string' }));
-      this.location.replaceState('', base64EncodedDeflatedAppStateJson);
-      this.url = this.baseUrl + this.location.path();
-    });
+          electron: this.showElectron,
+          trajectory: this.showTrajectory,
+          grid: this.showGrid,
+          axes: this.showAxes,
+          currentSample: this._currentSampleIndex,
+          rightPanel: this.isRightPanelExpanded,
+          bottomPanel: this.isBottomPanelExpanded
+        } as AppState)),
+        distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
+      )
+      .subscribe(appState => {
+        const base64EncodedDeflatedAppStateJson = btoa(pako.deflate(JSON.stringify(appState), { to: 'string' }));
+        this.location.replaceState('', base64EncodedDeflatedAppStateJson);
+        this.url = this.baseUrl + this.location.path();
+      });
   }
 
   ngOnDestroy(): void {
-    this.urlGeneratorSubscription.unsubscribe();
+    this.appStateSubscription.unsubscribe();
   }
 
   get rightPanelState() {

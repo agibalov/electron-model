@@ -1,5 +1,17 @@
 import {Vector3} from 'three';
 
+export class Sample {
+  constructor(
+    public readonly timestamp: number,
+    public readonly position: Vector3,
+    public readonly velocity: Vector3,
+    public readonly acceleration: Vector3,
+    public readonly electricForce: Vector3,
+    public readonly magneticForce: Vector3,
+    public readonly lorentzForce: Vector3) {
+  }
+}
+
 export class LorentzService {
   private readonly particleMass = 9.1e-31;
   private readonly particleCharge = 1.6e-19;
@@ -137,17 +149,5 @@ export class LorentzService {
     }
 
     return this._samples;
-  }
-}
-
-export class Sample {
-  constructor(
-    public readonly timestamp: number,
-    public readonly position: Vector3,
-    public readonly velocity: Vector3,
-    public readonly acceleration: Vector3,
-    public readonly electricForce: Vector3,
-    public readonly magneticForce: Vector3,
-    public readonly lorentzForce: Vector3) {
   }
 }

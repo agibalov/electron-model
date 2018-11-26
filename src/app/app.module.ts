@@ -53,12 +53,7 @@ import { PlayerComponent } from './player/player.component';
     },
     {
       provide: BASE_URL,
-      useFactory: (document) => {
-        return () => {
-          // `http://agibalov.io/electron-model/`
-          return `${document.location.protocol}//${document.location.host}${document.location.pathname}`;
-        };
-      },
+      useFactory: (document) => `${document.location.protocol}//${document.location.host}${document.location.pathname}`,
       deps: [ DOCUMENT ]
     },
     {
