@@ -1,24 +1,26 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {ThreeDirective} from './three.directive';
-import {CameraDirective} from './camera.directive';
-import {SceneDirective} from './scene.directive';
-import {ElectronDirective} from './electron.directive';
-import {ManipulatorDirective} from './manipulator.directive';
-import {GridDirective} from './grid.directive';
-import {LightDirective} from './light.directive';
-import {FormsModule} from '@angular/forms';
-import {TrajectoryDirective} from './trajectory.directive';
-import {ExponentialPipe} from './exponential.pipe';
-import {AxesDirective} from './axes.directive';
-import {VectorPipe} from './vector.pipe';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ThreeDirective } from './three.directive';
+import { CameraDirective } from './camera.directive';
+import { SceneDirective } from './scene.directive';
+import { ElectronDirective } from './electron.directive';
+import { MouseManipulatorDirective } from './manipulations/mouse-manipulator.directive';
+import { GridDirective } from './grid.directive';
+import { LightDirective } from './light.directive';
+import { FormsModule } from '@angular/forms';
+import { TrajectoryDirective } from './trajectory.directive';
+import { ExponentialPipe } from './exponential.pipe';
+import { AxesDirective } from './axes.directive';
+import { VectorPipe } from './vector.pipe';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent, AppState, BASE_URL, DEFAULT_APP_STATE } from './app.component';
 import { DOCUMENT, Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { ShareButtonsModule } from '@ngx-share/buttons';
 import { VectorEditorComponent } from './vector-editor/vector-editor.component';
 import { PlayerComponent } from './player/player.component';
+import { TouchManipulatorDirective } from './manipulations/touch-manipulator.directive';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { PlayerComponent } from './player/player.component';
     CameraDirective,
     SceneDirective,
     ElectronDirective,
-    ManipulatorDirective,
+    MouseManipulatorDirective,
+    TouchManipulatorDirective,
     GridDirective,
     LightDirective,
     VectorEditorComponent,
@@ -43,6 +46,7 @@ import { PlayerComponent } from './player/player.component';
     BrowserAnimationsModule,
     HttpClientModule,
     HttpClientJsonpModule,
+    FontAwesomeModule,
     ShareButtonsModule.forRoot()
   ],
   providers: [

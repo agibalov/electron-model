@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
+import { faFastBackward, faPause, faPlay, faStepBackward, faStepForward, faFastForward } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-player',
@@ -8,6 +9,14 @@ import { Subscription, timer } from 'rxjs';
 })
 export class PlayerComponent {
   private static readonly DESIRED_PLAYBACK_TIME = 3000;
+
+  readonly faFastBackward = faFastBackward;
+  readonly faStepBackward = faStepBackward;
+  readonly faPlay = faPlay;
+  readonly faPause = faPause;
+  readonly faStepForward = faStepForward;
+  readonly faFastForward = faFastForward;
+
   private _numberOfSamples: number;
   private _currentSampleIndex: number;
   subscription: Subscription;

@@ -6,34 +6,22 @@
 
 <div class="buttons">
   <button type="button" class="button is-small" (click)="jumpToFirstSample()">
-        <span class="icon is-small">
-          <i class="fas fa-fast-backward"></i>
-        </span>
+    <fa-icon [icon]="faFastBackward"></fa-icon>
   </button>
   <button type="button" class="button is-small" (click)="jumpOneSampleBack()">
-        <span class="icon is-small">
-          <i class="fas fa-step-backward"></i>
-        </span>
+    <fa-icon [icon]="faStepBackward"></fa-icon>
   </button>
   <button type="button" class="button is-small" (click)="play()" *ngIf="subscription == null">
-        <span class="icon is-small">
-          <i class="fas fa-play"></i>
-        </span>
+    <fa-icon [icon]="faPlay"></fa-icon>
   </button>
   <button type="button" class="button is-small" (click)="pause()" *ngIf="subscription != null">
-        <span class="icon is-small">
-          <i class="fas fa-pause"></i>
-        </span>
+    <fa-icon [icon]="faPause"></fa-icon>
   </button>
   <button type="button" class="button is-small" (click)="jumpOneSampleForward()">
-        <span class="icon is-small">
-          <i class="fas fa-step-forward"></i>
-        </span>
+    <fa-icon [icon]="faStepForward"></fa-icon>
   </button>
   <button type="button" class="button is-small" (click)="jumpToLastSample()">
-        <span class="icon is-small">
-          <i class="fas fa-fast-forward"></i>
-        </span>
+    <fa-icon [icon]="faFastForward"></fa-icon>
   </button>
   <span>Sample {{currentSampleIndex + 1}} of {{numberOfSamples}}</span>
 </div>

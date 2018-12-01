@@ -1,12 +1,14 @@
 <div class="root-container">
   <div class="top-container">
     <div class="scene-view">
-      <canvas manipulator
-              (manipulationBegin)="cameraDriver.handleManipulationBegin(three.camera)"
-              (manipulationRotationUpdate)="cameraDriver.handleRotationUpdate($event)"
-              (manipulationTranslationUpdate)="cameraDriver.handleTranslationUpdate($event)"
-              (manipulationZoomUpdate)="cameraDriver.handleZoomUpdate($event)"
-              (manipulationEnd)="cameraDriver.handleManipulationEnd()"
+      <canvas appMouseManipulator
+              (mouseManipulationBegin)="cameraDriver.handleManipulationBegin(three.camera)"
+              (mouseManipulationUpdate)="cameraDriver.handleManipulationUpdate($event)"
+              (mouseManipulationEnd)="cameraDriver.handleManipulationEnd()"
+              appTouchManipulator
+              (touchManipulationBegin)="cameraDriver.handleManipulationBegin(three.camera)"
+              (touchManipulationUpdate)="cameraDriver.handleManipulationUpdate($event)"
+              (touchManipulationEnd)="cameraDriver.handleManipulationEnd()"
               three #three="three">
         <camera [position]="cameraDriver.cameraPosition" [target]="cameraDriver.cameraTarget" fov="60"></camera>
         <scene>
@@ -19,18 +21,18 @@
       </canvas>
       <div class="right-panel-button-overlay">
         <button *ngIf="isRightPanelExpanded" type="button" class="button" (click)="collapseRightPanel()">
-          <i class="fas fa-angle-double-right"></i>
+          <fa-icon [icon]="faAngleDoubleRight"></fa-icon>
         </button>
         <button *ngIf="!isRightPanelExpanded" type="button" class="button" (click)="expandRightPanel()">
-          <i class="fas fa-angle-double-left"></i>
+          <fa-icon [icon]="faAngleDoubleLeft"></fa-icon>
         </button>
       </div>
       <div class="bottom-panel-button-overlay">
         <button *ngIf="isBottomPanelExpanded" type="button" class="button" (click)="collapseBottomPanel()">
-          <i class="fas fa-angle-double-down"></i>
+          <fa-icon [icon]="faAngleDoubleDown"></fa-icon>
         </button>
         <button *ngIf="!isBottomPanelExpanded" type="button" class="button" (click)="expandBottomPanel()">
-          <i class="fas fa-angle-double-up"></i>
+          <fa-icon [icon]="faAngleDoubleUp"></fa-icon>
         </button>
       </div>
       <div class="copyright-overlay">

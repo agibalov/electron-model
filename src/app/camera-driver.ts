@@ -1,4 +1,5 @@
-import {Camera, Vector2, Vector3} from 'three';
+import { Camera, Vector3 } from 'three';
+import { ManipulationUpdate } from './manipulations/manipulation-commons';
 
 export class CameraDriver {
   cameraTarget: Vector3;
@@ -52,23 +53,19 @@ export class CameraDriver {
     };
   }
 
-  handleRotationUpdate(position: Vector2) {
-    this._cameraPhi = this.manipulation.phiStart + position.x * 10;
-    this._cameraTheta = this.manipulation.thetaStart + position.y * 10;
-  }
+  handleManipulationUpdate(manipulationInfo: ManipulationUpdate) {
+    // rotate
+    this._cameraPhi = this.manipulation.phiStart + manipulationInfo.rotationX * 10;
+    this._cameraTheta = this.manipulation.thetaStart + manipulationInfo.rotationY * 10;
 
-  handleTranslationUpdate(position: Vector2) {
-    const horizontalTranslation = this.manipulation.horizontalAxis.clone().multiplyScalar(position.x * 3);
-    const verticalTranslation = this.manipulation.verticalAxis.clone().multiplyScalar(-position.y * 3);
+    // translate
+    const horizontalTranslation = this.manipulation.horizontalAxis.clone().multiplyScalar(manipulationInfo.translationX * 3);
+    const verticalTranslation = this.manipulation.verticalAxis.clone().multiplyScalar(-manipulationInfo.translationY * 3);
+    const depthicalTranslation = this.manipulation.depthicalAxis.clone().multiplyScalar(manipulationInfo.translationZ * 0.1);
     this.cameraTarget = this.manipulation.translationStart.clone()
       .add(horizontalTranslation)
-      .add(verticalTranslation);
-  }
-
-  handleZoomUpdate(zoom: number) {
-    const translation = this.manipulation.depthicalAxis.clone().multiplyScalar(zoom * 0.1);
-    this.cameraTarget = this.manipulation.translationStart.clone()
-      .add(translation);
+      .add(verticalTranslation)
+      .add(depthicalTranslation);
   }
 
   handleManipulationEnd() {

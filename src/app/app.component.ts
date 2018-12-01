@@ -1,12 +1,13 @@
 import { Component, Inject, InjectionToken, OnDestroy, OnInit } from '@angular/core';
-import { CameraDriver} from './camera-driver';
-import {LorentzService, Sample} from './lorentz.service';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { CameraDriver } from './camera-driver';
+import { LorentzService, Sample } from './lorentz.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { interval, Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 import { Vector3 } from 'three';
 import * as pako from 'pako';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { faAngleDoubleLeft, faAngleDoubleRight, faAngleDoubleDown, faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 
 export interface AppState {
   cameraTargetX: number;
@@ -73,6 +74,11 @@ export const DEFAULT_APP_STATE = new InjectionToken<AppState>('DEFAULT_APP_STATE
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
+  readonly faAngleDoubleRight = faAngleDoubleRight;
+  readonly faAngleDoubleLeft = faAngleDoubleLeft;
+  readonly faAngleDoubleDown = faAngleDoubleDown;
+  readonly faAngleDoubleUp = faAngleDoubleUp;
+
   readonly cameraDriver: CameraDriver;
   readonly lorentzService: LorentzService;
   showElectron = true;
