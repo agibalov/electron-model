@@ -11,6 +11,11 @@
     "build:prod": "ng build --prod=true --aot=false --buildOptimizer=false --optimization=false --baseHref http://agibalov.io/electron-model/",
     "deploy": "angular-cli-ghpages --dir dist/electron-model"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^7.0.4",
@@ -49,6 +54,7 @@
     "@types/three": "^0.93.10",
     "angular-cli-ghpages": "^0.5.2",
     "codelyzer": "^4.5.0",
+    "husky": "^3.0.4",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~1.7.1",
