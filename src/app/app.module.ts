@@ -47,7 +47,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     HttpClientModule,
     HttpClientJsonpModule,
     FontAwesomeModule,
-    ShareButtonsModule.forRoot()
+    ShareButtonsModule.withConfig()
   ],
   providers: [
     Location,

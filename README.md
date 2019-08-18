@@ -2,4 +2,4 @@
 
 ![demo](https://github.com/agibalov/electron-model/raw/master/demo.png)
 
-Build with `npm run build_prod`, then deploy with `npm run deploy`.
+Build with `yarn build:prod`, then deploy with `yarn deploy`.
